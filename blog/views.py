@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import request,HttpResponse
 from blog.models import Post,BlogComment
 from django.contrib import messages
-
+from blog.templatetags import extra_filters
 # Create your views here.
 
 def blogHome(request):
@@ -14,8 +14,20 @@ def blogPost(request,slug):
     post = Post.objects.filter(slug=slug).first()
     
     # getting comment for above post
-    comments=BlogComment.objects.filter(post=post)
-    context={'post':post,'comments':comments,'user':request.user}
+    comments=BlogComment.objects.filter(post=post,parent=None)
+    # getting replies
+    replies = BlogComment.objects.filter(post=post).exclude(parent=None)
+    
+    replyDict={}
+    for reply in replies:
+        if reply.parent.sno not in replyDict.keys():
+            replyDict[reply.parent.sno]=[reply]
+        else:
+            replyDict[reply.parent.sno].append(reply)
+
+    print("replydict is" ,replyDict)
+
+    context={'post':post,'comments':comments,'user':request.user,'replyDict':replyDict}
     return render(request,"blog/blogPost.html",context)      
 
 def postComment(request):

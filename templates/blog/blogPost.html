@@ -9,6 +9,7 @@
 
 {% load static %}
 {% load humanize %}
+{% load extra_filters %}
 
 <div class="container my-3">
   <div class="col-md-4">
@@ -114,6 +115,12 @@
                 <button type="submit" class="btn btn-primary">Comment</button>
               </form>
             </div>
+          </div>
+          <div class="replies" style="background-color:#b1d0f1;" >
+            {% for reply in replyDict|get_val:i.sno %}
+            <small class="mx-2">{{reply.comment}}</small>
+            <hr class="my-0">
+            {% endfor %}
           </div>
         </div>
       </div>
