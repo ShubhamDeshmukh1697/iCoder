@@ -8,12 +8,17 @@
 {% block body %}
 
 {% load static %}
+{% load humanize %}
+
 <div class="container my-3">
-<div class="col-md-4">
+  <div class="col-md-4">
     <div class="card mb-4 shadow-sm">
-      <img src="/media/{{post.image}}" class="bd-placeholder-img card-img-top" width="100%" height="250" role="img" ></img>
+      <img src="/media/{{post.image}}" class="bd-placeholder-img card-img-top" width="100%" height="250"
+        role="img"></img>
       <div class="card-body">
-      <b><p class="text-capitalize text-decoration-underline" style="color: #ec730b;">{{post.title}}</p></b>
+        <b>
+          <p class="text-capitalize text-decoration-underline" style="color: #ec730b;">{{post.title}}</p>
+        </b>
         <p class="card-text">{{post.content|truncatechars:100}}</p>
         <div class="d-flex justify-content-between align-items-center">
           <div class="btn-group">
@@ -23,60 +28,101 @@
         </div>
       </div>
     </div>
-</div>
+  </div>
 </div>
 <div class="container">
-<div class="blog-post">
-        <h2 class="blog-post-title">{{post.title}}</h2>
-        <p class="blog-post-meta">{{post.timestamp}} by <a href="#">{{ post.author}}</a></p>
+  <div class="blog-post">
+    <h2 class="blog-post-title">{{post.title}}</h2>
+    <p class="blog-post-meta">{{post.timestamp}} by <a href="#">{{ post.author}}</a></p>
 
-        <p>{{post.content}}</p>
-        <hr>
-        <p>{{post.content}}</p>
-        <blockquote>
-          <p>{{post.content}}</p>
-        </blockquote>
-        <p>{{post.content}}</p>
-</div>
-<hr class="my-4">
-<div class="container border border-dark rounded " style="margin-bottom:10%">
-  <h3 class="my-3 font-weight-bold">Comments</h3>
-  {% for message in messages %}
-  <div class="text-center alert my-2 col-5 alert-{{message.tags}}" role="alert">
-  {{message}}
+    <p>{{post.content}}</p>
+    <hr>
+    <p>{{post.content}}</p>
+    <blockquote>
+      <p>{{post.content}}</p>
+    </blockquote>
+    <p>{{post.content}}</p>
   </div>
-  {% endfor %}
-  
-  <!-- comment form starts here -->
-  <form class="my-3" action="/blog/postComment" method="post">
-  {% csrf_token %}
-    <div class=" form-group">
-      <label for="exampleInputEmail1">Post Comment</label>
-      <input class="form-control" type="text" name="comment" id="comment">
+  <hr class="my-4">
+  <div class="container border border-dark rounded " style="margin-bottom:10%">
+    <h3 class="my-3 font-weight-bold">Comments({{comments.count}})</h3>
+    {% for message in messages %}
+    <div class="text-center alert my-2 col-5 alert-{{message.tags}}" role="alert">
+      {{message}}
     </div>
-    <input type="hidden" name="postSno" id="postSno" value="{{post.sno}}">
-    <button type="submit" class="btn btn-primary">Comment</button>
-  </form>
-  <hr class="w-100">
-  <!-- comment form ends here -->
+    {% endfor %}
 
-  <!-- comments section starts here -->
-  {% for i in comments  %}
+    <!-- comment form starts here -->
+    {% if user.is_authenticated %}
+    <form class="my-3" action="/blog/postComment" method="post">
+      {% csrf_token %}
+      <div class=" form-group">
+        <label for="comment">Post Comment</label>
+        <input class="form-control" type="text" name="comment" id="comment">
+        <!-- important -->
+        <input type="hidden" name="parentSno" value="">
+      </div>
+      <!-- important -->
+      <input type="hidden" name="postSno" id="postSno" value="{{post.sno}}">
+      <button type="submit" class="btn btn-primary">Comment</button>
+    </form>
+    <hr class="w-100">
+    {% else %}
+    <div class="mb-4">
+      <h5>You must be logged in to post a comment</h5>
+      <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#LoginModal">
+        Login
+      </button>
+      <hr>
+    </div>
+
+    {% endif %}
+    <!-- comment form ends here -->
+
+    <!-- comments section starts here -->
+    {% for i in comments  %}
     <div class="row mt-3 mb-0 px-1 py-1" style="background-color: antiquewhite;">
       <div class="col-md-1">
-      <img class="w-75 h-75 rounded-circle" style="padding-top:6px;" src="{% static '/blog/anushka.jpg' %}" alt="...">
+        <img class="w-75 rounded-circle my-1" style="padding-top:6px;" src="{% static '/blog/anushka.jpg' %}" alt="...">
       </div>
-      
-      <div class="col-md-11 pt-2"><b>{{i.user.username}}</b><small class="mx-2" style="color:blue;">{{i.timestamp}}</small>
-      <div><p>{{i.comment}}</p></div>
+
+      <div class="col-md-11 pt-2"><b>{{i.user.username}}</b><small class="mx-2"
+          style="color:blue;">{{i.timestamp|naturaltime}}</small>
+        <div class="my-0">
+          <p style="font-family: 'Dancing Script', cursive;font-family: 'Kalam', cursive;">{{i.comment}}</p>
+        </div>
+        
+        <!-- reply starts here -->
+        <div class="reply mx-0 ">
+            <a data-bs-toggle="collapse" href="#replyBox{{i.sno}}" role="button" aria-expanded="false" aria-controls="replyBox{{i.sno}}">
+              reply
+            </a>
+          <div class="collapse" id="replyBox{{i.sno}}">
+            <div class="card card-body my-2">
+              <!-- reply box -->
+              <form class="my-3" action="/blog/postComment" method="post">
+                {% csrf_token %}
+                <div class=" form-group">
+                  <label for="comment"><small>Post a Reply</small></label>
+                  <input class="form-control" type="text" name="comment" id="comment">
+                  
+                  <!-- important -->
+                  <input type="hidden" name="parentSno" value="{{i.sno}}">
+                </div>
+                <!-- important -->
+                <input type="hidden" name="postSno" id="postSno" value="{{post.sno}}">
+                <button type="submit" class="btn btn-primary">Comment</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-      
+
     </div>
-    
-  {% endfor %}
-  <!-- comment section ends here -->
-  
-</div>
 
-{% endblock body %}
+    {% endfor %}
+    <!-- comment section ends here -->
 
+  </div>
+
+  {% endblock body %}

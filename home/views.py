@@ -52,6 +52,7 @@ def handleSignup(request):
         email = request.POST['email']
         pass1 = request.POST['pass1']
         pass2 = request.POST['pass2']
+        profile_image= request.POST['profileImage']
 
         # checks for erroneous input
         if len(username)<10:
@@ -69,6 +70,8 @@ def handleSignup(request):
         myuser= User.objects.create_user(username,email,pass1)
         myuser.first_name=fname
         myuser.last_name=lname
+        myuser.profile_image= profile_image
+        print(myuser.profile_image)
         myuser.save()
         messages.success(request, 'Your account has been created')
        

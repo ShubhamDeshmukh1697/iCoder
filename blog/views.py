@@ -15,7 +15,7 @@ def blogPost(request,slug):
     
     # getting comment for above post
     comments=BlogComment.objects.filter(post=post)
-    context={'post':post,'comments':comments}
+    context={'post':post,'comments':comments,'user':request.user}
     return render(request,"blog/blogPost.html",context)      
 
 def postComment(request):
@@ -24,9 +24,15 @@ def postComment(request):
         user = request.user
         postSno = request.POST.get('postSno')
         post = Post.objects.get(sno=postSno)
-
-        commentObj=BlogComment(comment=comment,user=user,post=post)
+        parentSno = request.POST.get('parentSno')
+        if (parentSno==""):
+            commentObj=BlogComment(comment=comment,user=user,post=post)
+            messages.success(request,'your comment has been posted')
+        else:
+            parent=BlogComment.objects.get(sno=parentSno)
+            commentObj=BlogComment(comment=comment,user=user,post=post,parent=parent)
+            messages.success(request,'your gave a reply')
         commentObj.save()
-        messages.success(request,'your comment has been posted')
+        
 
     return redirect(f"/blog/{post.slug}")      
