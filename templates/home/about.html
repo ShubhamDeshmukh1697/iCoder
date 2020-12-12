@@ -48,9 +48,9 @@
 <!-- form container stars here -->
 <div class="container col-5 my-5 form-container">
   <div class="mt-3"><h3 class="row justify-content-center text-uppercase text- ">Book Now</h3></div>
-<form class="row g-3 px-5 pt-2 pb-5">
+<form onsubmit="Submit()" class="row g-3 px-5 pt-2 pb-5">
   <div class="col-md-6">
-    <label for="name" class="form-label">name</label>
+    <label for="name"  class="form-label">name</label>
     <input type="text" class="form-control" id="name">
   </div>
   <div class="col-md-6">
@@ -70,21 +70,44 @@
     <input type="text" class="form-control" id="inputCity">
   </div>
   <div class="col-md-4 pt-5">
-    <label for="inputState" class="form-label">State</label>
-    <select id="inputState" class="form-select">
+    <label for="state" class="form-label" >State</label>
+    <select id="state" name="state" onchange="checkSelect()" class="form-select">
       <option selected>Choose...</option>
-      <option>...</option>
+      <option>C</option>
+      <option>B</option>
+      <option>A</option>
+      
+
     </select>
   </div>
   <div class="col-md-6 my-2  ">
     <label for="inputZip" class="form-label">Zip</label>
     <input type="number" class="form-control" id="inputZip">
   </div>
-  
+  <div id="choose" class="col-md-6" style="display:none;">
+    <label for="enter" class="form-label">enter</label>
+    <input type="text" class="form-control" id="enter">
+  </div>
   <div class="col-12 mt-1">
     <button type="submit" class="btn btn-primary">Sign in</button>
   </div>
 </form>
 </div>
 <!-- form container ends here -->
+
+{% block js %}
+<script>
+function checkSelect(){
+  var choice = document.getElementById("state").value;
+  if(choice =="A"){
+    document.getElementById("choose").style.removeProperty('display');
+    document.getElementById("enter").required=true;
+  }
+}
+function Submit(){
+  console.log("done")
+}
+</script>
+
+{% endblock %}
 {% endblock body %}

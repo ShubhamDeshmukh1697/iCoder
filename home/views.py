@@ -11,8 +11,21 @@ from blog. models import Post
 
 # HTML Pages
 def home(request):
-    return render(request,'home/home.html')
+    users=[]
+    user=User.objects.all()
+    current_user=request.user
+    posts=Post.objects.all()
+    for i in user:
+        if i==current_user:
+            pass
+        else:
+            users.append(i)
+    
 
+    return render(request,'home/home.html',{'users':users,'current_user':current_user,'posts':posts})
+
+def profile(request,slug):
+    return render(request,'home/profile.html')
 def contact(request):
     if request.method=="POST":
         name=request.POST.get('name','')
@@ -57,25 +70,24 @@ def handleSignup(request):
         # checks for erroneous input
         if len(username)<10:
             messages.error(request,"username must be more than 10 characters")
-            return redirect('/blog')
+            return redirect('/')
         if (not username.isalnum()):
             messages.error(request,"username should only contain letters and numbers")
-            return redirect('/blog')
+            return redirect('/')
         if (pass1 != pass2):
             messages.error(request,"Passwords don't match")
             
-            return redirect('/blog')    
+            return redirect('/')    
 
         # create user
         myuser= User.objects.create_user(username,email,pass1)
         myuser.first_name=fname
         myuser.last_name=lname
-        myuser.profile_image= profile_image
-        print(myuser.profile_image)
+        
         myuser.save()
         messages.success(request, 'Your account has been created')
        
-        return redirect('/blog')
+        return redirect('/')
     else:
         return HttpResponse("404 - Not Found")
 
@@ -90,10 +102,10 @@ def handleLogin(request):
             login(request,user)
             
             messages.success(request,"successfully logged in")
-            return redirect('/blog')
+            return redirect('/')
         else:
             messages.error(request,"invalid credentials...please try again")
-            return redirect('/blog')
+            return redirect('/')
 
     return HttpResponse("login")
 
@@ -101,5 +113,5 @@ def handleLogout(request):
     # if request.method=="POST":
     logout(request)
     messages.success(request,"logged out")
-    return redirect('/blog')
+    return redirect('/')
 

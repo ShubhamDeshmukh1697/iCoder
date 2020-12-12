@@ -1,27 +1,91 @@
 {% extends 'home/basic.html' %}
 {% block homeactive %} active {% endblock homeactive %}
 {% block title %} Home {% endblock title %}
+{% block css %}
+body{
+background-color:red;
+}
+{% endblock %}
 
 {% block body %}
-<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="..." class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="..." class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="..." class="d-block w-100" alt="...">
-    </div>
+{% if request.user.is_superuser %}
+<div class="container">
+  <div class="mt-4 mb-3">
+    <H4 class="text-center " style="letter-spacing:50px;">USERS</H4>
   </div>
-  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </a>
 </div>
+
+<div class="container mb-5 d-flex">
+  <table class="table table-hover justify-content-start" style="border-style: groove;">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    {% if current_user.is_authenticated %}
+    <tbody>
+      <tr class="table-success">
+        <th scope="row">{{current_user.id}}</th>
+        <td>{{current_user.first_name}}</td>
+        <td>{{current_user.last_name}}</td>
+        <td>{{current_user.username}}</td>
+        <td>{{current_user.email}}</td>
+      </tr>
+    </tbody>
+    {% endif %}
+    {% for user in users %}
+    <tbody>
+      <tr class="table">
+        <th scope="row">{{user.id}}</th>
+        <td>{{user.first_name}}</td>
+        <td>{{user.last_name}}</td>
+        <td>{{user.username}}</td>
+        <td>{{user.email}}</td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+
+</div>
+{% endif %}
+
+<!-- posts table starts here -->
+<div class="container">
+  <div class="mt-4 mb-3">
+    <H4 class="text-center ">POSTS</H4>
+  </div>
+</div>
+
+<div class="container mb-5 d-flex">
+  <table class="table table-hover justify-content-start" style="border-style: groove;">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Category</th>
+        <th scope="col">Content</th>
+        <th scope="col">View Post</th>
+      </tr>
+    </thead>
+    {% for post in posts %}
+    <tbody>
+      <tr class="table">
+        <th scope="row">{{post.sno}}</th>
+        <td>{{post.title}}</td>
+        <td>{{post.author}}</td>
+        <td>{{post.category}}</td>
+        <td>{{post.content|truncatechars:20}}</td>
+        <td><a href="{{post.slug}}"><button type="button" class="btn btn-sm btn-info">View</button></a></td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+
+</div>
+
 {% endblock body %}

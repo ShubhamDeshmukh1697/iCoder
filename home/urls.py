@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from home import views
+from blog.views import blogPost
 
 
 urlpatterns = [
@@ -11,4 +12,6 @@ urlpatterns = [
     path('signup',views.handleSignup,name="signup"),
     path('login',views.handleLogin,name="handleLogin"),
     path('logout',views.handleLogout,name="handleLogout"),
+    path('<str:slug>',blogPost,name="blogPost"),
+    
 ]

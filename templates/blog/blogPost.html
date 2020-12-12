@@ -70,7 +70,7 @@
     <hr class="w-100">
     {% else %}
     <div class="mb-4">
-      <h5>You must be logged in to post a comment</h5>
+      <h5>You must be logged in to post a comment and reply to this post</h5>
       <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#LoginModal">
         Login
       </button>
@@ -92,21 +92,23 @@
         <div class="my-0">
           <p style="font-family: 'Dancing Script', cursive;font-family: 'Kalam', cursive;">{{i.comment}}</p>
         </div>
-        
+
         <!-- reply starts here -->
+        {% if user.is_authenticated %}
         <div class="reply mx-0 ">
-            <a data-bs-toggle="collapse" href="#replyBox{{i.sno}}" role="button" aria-expanded="false" aria-controls="replyBox{{i.sno}}">
-              reply
-            </a>
+          <a data-bs-toggle="collapse" href="#replyBox{{i.sno}}" role="button" aria-expanded="false"
+            aria-controls="replyBox{{i.sno}}">
+            reply
+          </a>
           <div class="collapse" id="replyBox{{i.sno}}">
             <div class="card card-body my-2">
-              <!-- reply box -->
+              <!-- reply form -->
               <form class="my-3" action="/blog/postComment" method="post">
                 {% csrf_token %}
                 <div class=" form-group">
                   <label for="comment"><small>Post a Reply</small></label>
                   <input class="form-control" type="text" name="comment" id="comment">
-                  
+
                   <!-- important -->
                   <input type="hidden" name="parentSno" value="{{i.sno}}">
                 </div>
@@ -116,13 +118,21 @@
               </form>
             </div>
           </div>
-          <div class="replies" style="background-color:#b1d0f1;" >
+          <div class="replies" style="background-color:white;">
             {% for reply in replyDict|get_val:i.sno %}
-            <small class="mx-2">{{reply.comment}}</small>
-            <hr class="my-0">
+              <div class="row">
+                <div class="col-md-1">
+                  <img class="w-75 rounded-circle my-1 mx-2" style="padding-top:6px;" src="{% static '/blog/anushka.jpg' %}" alt="...">
+                </div>
+                <div class="col-md-11">
+                  <small class="mx-2">{{reply.comment}}</small>
+                  <hr class="my-0">
+                </div>
+              </div>
             {% endfor %}
           </div>
         </div>
+        {% endif %}
       </div>
 
     </div>
