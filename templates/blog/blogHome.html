@@ -2,11 +2,7 @@
 {% block blogactive %} active {% endblock blogactive %}
 {% block title %}blogHome{% endblock title %}
 {% block body %}
-{% for message in messages %}
-<div class="text-center alert my-0 alert-{{message.tags}}" role="alert">
-  {{message}}
-</div>
-{% endfor %}
+
 <main role="main">
 
   <section class="jumbotron text-center">

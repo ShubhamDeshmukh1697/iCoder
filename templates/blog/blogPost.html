@@ -44,6 +44,25 @@
     </blockquote>
     <p>{{post.content}}</p>
   </div>
+  <!-- next and previous buttons starts here-->
+  <div class="container-fluid mb-3 fixed-bottom d-flex justify-content-between ">
+    
+    {% if next is not None and prev is not None %}
+    <a class="btn btn-danger" style="width:100px;"href="{{prev.slug}}">First</a>
+    <a class="btn btn-danger" style="width:100px;"href="{{next.slug}}">Next</a>
+    {% elif next is not None %}
+
+    <a class="btn btn-secondary" style="width:100px;" disabled>Last</a>
+    <a class="btn bg-danger" style="width:100px;" href="{{next.slug}}">Next</a>
+    {% else %}
+    
+    <a class="btn btn-danger" style="width:100px;" href="{{prev.slug}}">Previous</a>
+    <a class="btn btn-secondary" style="width:100px;" disabled>Last</a>
+    {% endif %}
+    
+</div>
+  <!-- next and previous sectionends here -->
+
   <hr class="my-4">
   <div class="container border border-dark rounded " style="margin-bottom:10%">
     <h3 class="my-3 font-weight-bold">Comments({{comments.count}})</h3>
@@ -53,6 +72,7 @@
     </div>
     {% endfor %}
 
+  
     <!-- comment form starts here -->
     {% if user.is_authenticated %}
     <form class="my-3" action="/blog/postComment" method="post">

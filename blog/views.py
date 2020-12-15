@@ -3,6 +3,8 @@ from django.http import request,HttpResponse
 from blog.models import Post,BlogComment
 from django.contrib import messages
 from blog.templatetags import extra_filters
+from next_prev import next_in_order,prev_in_order
+
 # Create your views here.
 
 def blogHome(request):
@@ -11,7 +13,11 @@ def blogHome(request):
     return render(request,"blog/blogHome.html",context)
 
 def blogPost(request,slug):
+    allPosts=Post.objects.all()
     post = Post.objects.filter(slug=slug).first()
+    next = next_in_order(post)
+    
+    prev = prev_in_order(next)
     
     # getting comment for above post
     comments=BlogComment.objects.filter(post=post,parent=None)
@@ -27,7 +33,7 @@ def blogPost(request,slug):
 
     print("replydict is" ,replyDict)
 
-    context={'post':post,'comments':comments,'user':request.user,'replyDict':replyDict}
+    context={'post':post,'next':next,'prev':prev,'comments':comments,'user':request.user,'replyDict':replyDict}
     return render(request,"blog/blogPost.html",context)      
 
 def postComment(request):

@@ -2,12 +2,15 @@
 {% block homeactive %} active {% endblock homeactive %}
 {% block title %} Home {% endblock title %}
 {% block css %}
-body{
-background-color:red;
-}
+
 {% endblock %}
 
 {% block body %}
+{% for message in messages %}
+<div class="text-center alert my-0 alert-{{message.tags}}" role="alert">
+  {{message}}
+</div>
+{% endfor %}
 {% if request.user.is_superuser %}
 <div class="container">
   <div class="mt-4 mb-3">
@@ -60,8 +63,8 @@ background-color:red;
   </div>
 </div>
 
-<div class="container mb-5 d-flex">
-  <table class="table table-hover justify-content-start" style="border-style: groove;">
+<div class="container mt-5 d-flex">
+  <table class="table table-hover justify-content-start mx-5 " style="border-style: groove;">
     <thead class="thead-dark">
       <tr>
         <th scope="col">ID</th>
@@ -69,7 +72,7 @@ background-color:red;
         <th scope="col">Author</th>
         <th scope="col">Category</th>
         <th scope="col">Content</th>
-        <th scope="col">View Post</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     {% for post in posts %}
@@ -80,12 +83,19 @@ background-color:red;
         <td>{{post.author}}</td>
         <td>{{post.category}}</td>
         <td>{{post.content|truncatechars:20}}</td>
-        <td><a href="{{post.slug}}"><button type="button" class="btn btn-sm btn-info">View</button></a></td>
+        <td class="d-flex justify-content-center" style="width:240px"><a href="{{post.slug}}"><button type="button" class="btn btn-sm btn-success mr-1">View</button></a>
+            {% if request.user.is_superuser %}
+            <a href="/delete/{{post.sno}}"><button type="button" class="btn btn-sm btn-success ml-2">Delete</button></a>
+            <a href="/update/{{post.sno}}"><button type="button" class="btn btn-sm btn-success ml-2">Update</button></a>
+            {% endif %}
+             </td>
       </tr>
     </tbody>
     {% endfor %}
   </table>
-
+</div>
+<div class="container d-flex mb-5 justify-content-center">
+  <button class="btn-primary btn">Add Post</button>
 </div>
 
 {% endblock body %}

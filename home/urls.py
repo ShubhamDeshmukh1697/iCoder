@@ -13,5 +13,7 @@ urlpatterns = [
     path('login',views.handleLogin,name="handleLogin"),
     path('logout',views.handleLogout,name="handleLogout"),
     path('<str:slug>',blogPost,name="blogPost"),
+    path('delete/<int:id>',views.delete,name='delete'),
+    path('update/<int:id>',views.update,name='update'),
     
 ]

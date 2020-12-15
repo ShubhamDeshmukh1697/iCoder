@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from blog. models import Post
+from .forms import *
 
 # HTML Pages
 def home(request):
@@ -38,9 +39,28 @@ def contact(request):
         messages.success(request, 'Feedback Sent!!!')
     return render(request,"home/contact.html")      
 
-def about(request):
-    return render(request,"home/about.html")      
+def delete(request,id):
+    post=Post.objects.get(sno=id)
+    post.delete()
+    return redirect('/')
+def update(request,id):
 
+    post=Post.objects.get(sno=id)
+    post.author="unknown"
+    post.save()
+    return redirect('/')
+
+def about(request):
+    
+    if request.method == "POST":
+        form = PostForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+        
+    else:
+        form = PostForm()
+    context = {'form':form}
+    return render(request,"home/about.html",context)      
 
 def search(request):
     
