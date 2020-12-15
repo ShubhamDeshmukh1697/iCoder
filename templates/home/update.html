@@ -1,0 +1,54 @@
+{% extends 'home/basic.html' %}
+{% block title %} Update {% endblock title%}
+{% block css %}
+
+.container{
+    border-radius:10px;
+    box-shadow: 0px 0px 18px 0px rgba(0,0,0,0.71);
+    -webkit-box-shadow: 0px 0px 18px 0px rgba(0,0,0,0.71);
+    -moz-box-shadow: 0px 0px 18px 0px rgba(0,0,0,0.71);
+}
+
+{% endblock %}
+{% block color %}background-color:#6951AE;{% endblock color %}
+
+{% block body %}
+<div class="container col-5 px-4 py-4 my-5" style='background-color:#AAD4C8;height:auto;'>
+
+<div class="mt-3"><h3 class="row justify-content-center text-uppercase my-3 " style="font-weight:800;color:black;">Update</h3></div>
+<form method="POST" action='/update/{{post.sno}}' class="row g-3 px-5 mt-2 pb-2">
+{% csrf_token %}
+  <div class="col-md-6">
+    <label for="title"  class="form-label">Title</label>
+    <input type="text" class="form-control" id="title" name="title" value="{{post.title}}" required>
+  </div>
+  <div class="col-md-6">
+    <label for="author" class="form-label">Author</label>
+    <input type="text" class="form-control" id="author" name="author" value="{{post.author}}" required>
+  </div>
+  <div class="col-6 my-2">
+    <label for="content" class="form-label">Content</label>
+    <div><textarea name="content" id="content" cols="30" row="1" style="color:#495057;" required>{{post.content|truncatechars:40}}</textarea>
+    </div>
+  </div>
+ 
+  <div class="col-6 my-2" >
+    <label for="category" class="form-label">Category</label>
+    <input type="text" class="form-control" id="category" name="category" value="{{post.category}}" required>
+  </div>
+  <div class="col-md-6 my-2">
+    <label for="timestamp" class="form-label">Date-Time</label>
+    <input type="datetime-local" step="1" class="form-control" id="datetime-local" name="datetime-local" required>
+  </div>
+  <div class="col-md-6 form-group py-3">
+    <label for="image">Image</label>
+    <input type="file" class="form-control-file" id="image" accept="image/*">
+  </div>
+  <div class="col-12 d-flex justify-content-center mt-2 mb-1">
+    <button type="submit" class="btn btn-dark" style="background-color:#FF5B64;border:none">Update</button>
+  </div>
+  
+</form>
+</div>
+{% endblock body %}
+

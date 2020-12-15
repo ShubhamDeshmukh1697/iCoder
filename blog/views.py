@@ -17,7 +17,7 @@ def blogPost(request,slug):
     post = Post.objects.filter(slug=slug).first()
     next = next_in_order(post)
     
-    prev = prev_in_order(next)
+    prev = prev_in_order(post)
     
     # getting comment for above post
     comments=BlogComment.objects.filter(post=post,parent=None)

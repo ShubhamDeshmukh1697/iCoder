@@ -43,12 +43,30 @@ def delete(request,id):
     post=Post.objects.get(sno=id)
     post.delete()
     return redirect('/')
+
 def update(request,id):
 
     post=Post.objects.get(sno=id)
-    post.author="unknown"
-    post.save()
-    return redirect('/')
+    if request.method=="POST":
+        title = request.POST.get('title')
+        
+        author = request.POST.get('author')
+        content = request.POST.get('content')
+        category = request.POST.get('category')
+        timestamp = request.POST.get('datetime-local')
+        
+        a = Post.objects.get(sno=id)
+        a.title = title
+        a.author = author
+        a.content = content
+        a.category = category
+        a.timestamp = timestamp
+        print(a)
+        a.save()
+        messages.success(request,'Update Successful')
+        return redirect('/')
+
+    return render(request,'home/update.html',{'post':post})
 
 def about(request):
     
@@ -85,19 +103,7 @@ def handleSignup(request):
         email = request.POST['email']
         pass1 = request.POST['pass1']
         pass2 = request.POST['pass2']
-        profile_image= request.POST['profileImage']
-
-        # checks for erroneous input
-        if len(username)<10:
-            messages.error(request,"username must be more than 10 characters")
-            return redirect('/')
-        if (not username.isalnum()):
-            messages.error(request,"username should only contain letters and numbers")
-            return redirect('/')
-        if (pass1 != pass2):
-            messages.error(request,"Passwords don't match")
-            
-            return redirect('/')    
+        profile_image= request.POST['profileImage']  
 
         # create user
         myuser= User.objects.create_user(username,email,pass1)
